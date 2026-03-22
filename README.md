@@ -67,6 +67,8 @@ Create a `.env` file in the project root:
 OPENAI_API_KEY=sk-...
 ```
 
+Place your PDF in the `data/` directory before ingesting.
+
 The first run will download the embedding model (~130 MB) and cross-encoder (~85 MB) from Hugging Face.
 
 ## How to run
