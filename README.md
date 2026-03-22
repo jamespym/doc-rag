@@ -16,7 +16,7 @@ PyMuPDF extracts per-span font size and bold flags, which are sufficient to dete
 
 **Indexing**. 
 BAAI/bge-small-en-v1. was used as the embedding model as it is fast, free, and is fully local for IP leakage concerns. In production, this can be swapped for Azure OpenAI.  
-FAISS and BM25 were chosen as they complement each others' weaknesses and are the industry standards for semantic and syntactic search.  
+FAISS and BM25 were chosen as they complement each other's weaknesses and are the industry standards for semantic and syntactic search.  
 Section and pages are prepended at embedding time for FAISS, but no prepend for BM25 to avoid polluting keyword matching.
 
 **Retrieval**. 
@@ -99,5 +99,7 @@ Results are written to `eval/results/eval_{timestamp}.json`.
 ## Future Improvements
 
 - **Structured table extraction.** Replace atomic table-block ingestion with structured row/column parsing with VLMs or MinerU. Fixes the dominant failure class, which are numerical queries where numbers lose their row/column context after chunking.
+- **Table-aware chunking.** Currently tables are detected via bounding boxes but still subject to fixed 500-token chunking, which can split a table mid-row and lose row/column relationships. A proper implementation would keep each table as an atomic chunk regardless of size, if not using structured table extraction as above.
 - **Query decomposition.** Detect comparison or superlative intent and issue one sub-query per entity before merging results. Fixes failures on queries with no named anchor (e.g. "which segment declined?") where single-query dense retrieval has no signal to pull any specific chunk. Q20 is a good example of where the current model struggles and where query decomposition will benefit the most.
+- **HyDE (Hypothetical Document Embeddings).** If a query uses derived terminology while the document uses a different phrasing, retrieval will miss. In Q23, for "free cash flow", the system never retrieved the cash flow statement as capex is recorded as "additions to property and equipment", not "capital expenditures". A HyDE hypothetical answer would naturally contain that native phrasing and embed closer to the right page, addressing queries with vocabulary mismatch.
 - **Contextual enrichment.** Prepend LLM-generated section summaries to chunks before embedding, so each chunk carries its surrounding context at retrieval time. This is akin to the approach used in Anthropic's contextual retrieval technique, without the entire document to the LLM per call.

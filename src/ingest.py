@@ -1,10 +1,3 @@
-"""
-PDF ingestion: parse, section-detect, and chunk a long PDF document.
-
-Pipeline: PDF → pages (PyMuPDF) → sections (heading detection) → chunks
-Each Chunk carries its text, section heading, and page range for citations.
-"""
-
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -45,7 +38,6 @@ def _line_is_heading(line: dict, body_size: float, sole_in_block: bool = True) -
 
     All-caps path: a standalone line whose text is fully uppercase (and has at
     least 4 non-space chars) is treated as a heading regardless of bold/size.
-    This covers documents that use ALL CAPS as their only heading signal.
     """
     spans = [s for s in line["spans"] if s["text"].strip()]
     if not spans:
