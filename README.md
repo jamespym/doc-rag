@@ -20,7 +20,7 @@ FAISS and BM25 were chosen as they complement each other's weaknesses and are th
 Section and pages are prepended at embedding time for FAISS, but no prepend for BM25 to avoid polluting keyword matching.
 
 **Retrieval**. 
-Dense and sparse each return top 50 candidates, fused with RRF (k=60). This provides coverage that neither provides alone. The cross-encoder reranker (ms-marco-MiniLM-L-6-v2) then reads (query, chunk) pairs jointly and returns the final top-10.
+Dense and sparse each return top 50 candidates, fused with RRF (k=60). This provides coverage that neither provides alone. The cross-encoder reranker (ms-marco-MiniLM-L-6-v2) then reads (query, chunk) pairs jointly, outputting a relevance score between them and returns the final top-10.
 
 **Generation**. 
 GPT-4o-mini at temperature=0. 4o-mini was chosen for its cost effectiveness at prototyping, and can be swapped to local LLMs or Azure OpenAI for IP privacy. The prompt engineering enforces citation by source number, prohibits extrapolation beyond retrieved context, and requires an explicit "not in sources" response for unanswerable questions.
